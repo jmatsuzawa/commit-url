@@ -1,0 +1,18 @@
+#! /bin/sh
+baseurl=http://git.gnome.org/browse
+module=`git remote -v | sed -n -e 's!^.*git.gnome.org/git/\([[:alnum:]+-]\{1,\}\) (push)$!\1!p' | head -n 1`
+branch=`git branch | sed -n -e 's/^\* \(.*\)/\1/p'`
+commit=`git log HEAD^..HEAD --pretty=%H`
+params=
+if [ x"$branch" != xmaster ]; then
+  params="h=${branch}&"
+fi
+params="${params}id=${commit}"
+
+url="${baseurl}/${module}/commit/?${params}"
+
+if [ $# -eq 0 ]; then
+  echo $url
+elif [ x"$1" = 'x-b' ]; then
+  w3m "$url"
+fi
